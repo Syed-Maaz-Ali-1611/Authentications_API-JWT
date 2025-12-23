@@ -1,5 +1,4 @@
 import User from "../models/user.model.js";
-// import jwt from 'jsonwebtoken';
 import bcrypt from "bcryptjs";
 import generateToken from "../utils/token.js";
 
@@ -71,10 +70,9 @@ export const login = async (req,res) =>{
 
 export const updateProfile = async (req, res) => {
     try {
-        const userId = req.user.id; // From auth middleware
+        const userId = req.user.id; 
         const { name, email } = req.body;
         
-        // Validate input
         if (!name && !email) {
             return res.status(400).json({ 
                 success: false,
@@ -82,12 +80,10 @@ export const updateProfile = async (req, res) => {
             });
         }
         
-        // Prepare update object
         const updateData = {};
         if (name) updateData.name = name;
         if (email) updateData.email = email;
         
-        // Check if email is already taken (only if email is being updated)
         if (email) {
             const emailExists = await User.findOne({ 
                 email, 
@@ -101,12 +97,11 @@ export const updateProfile = async (req, res) => {
             }
         }
         
-        // Update user
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             updateData,
-            { new: true, runValidators: true } // Return updated document
-        ).select('-password'); // Don't return password
+            { new: true, runValidators: true } 
+        ).select('-password'); 
         
         if (!updatedUser) {
             return res.status(404).json({ 
